@@ -9,14 +9,14 @@
   </include>
 
   <!-- Setup vision -->
-  <group ns="vision">
+   <group ns="vision">
     <node pkg="agimus_vision" type="tracker_object"
         output="$(arg output)"
         name="tracker"
         >
         <param name="imageTopic"      value="/xtion/rgb/image_raw" />
         <param name="cameraInfoTopic" value="/xtion/rgb/camera_info" />
-        <param name="debugDisplay"    value="false" />
+        <param name="debugDisplay"    value="true" />
         <param name="broadcastTopic"  value="true" />
         <param name="broadcastTf"     value="true" />
         <param name="broadcastTfPostfix" value="_tf" />
@@ -24,7 +24,7 @@
         <param name="cameraFrame" value="xtion_optical_frame" />
     </node>
 
-    <!-- Table -->
+    <!-- skin -->
     <node pkg="agimus_demos" type="group_of_tags.py" name="skin_tags" args="
         --child-frame-format 'skin/tag36_11_{:0>5d}'
         --measurement-parent-frame xtion_optical_frame
@@ -35,8 +35,9 @@
         "
         output="$(arg output)"
         />
-
-    <!-- Plank of wood 1 -->
+    
+    <!-- driller -->
+    
     <node pkg="agimus_demos" type="group_of_tags.py" name="driller_tags" args="
         --child-frame-format 'driller/tag36_11_{:0>5d}'
         --measurement-parent-frame xtion_optical_frame
@@ -44,6 +45,16 @@
         --no-description
         --size 0.064
         --tag 230
+        "
+        output="$(arg output)"
+        />
+    <node pkg="agimus_demos" type="group_of_tags.py" name="driller_tags_top" args="
+        --child-frame-format 'driller/tag36_11_{:0>5d}'
+        --measurement-parent-frame xtion_optical_frame
+        --group-frame driller/base_link
+        --no-description
+        --size 0.04
+        --tag 23
         "
         output="$(arg output)"
         />

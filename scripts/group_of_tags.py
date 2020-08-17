@@ -140,8 +140,8 @@ class GroupOfTags(object):
         from agimus_vision.srv import AddAprilTagService, AddObjectTracking
         from agimus_vision.msg import AprilTag
         if use_tracking:
-            wait_for_service("/vision/tracker/add_object_tracking")
-            add_object_tracking = rospy.ServiceProxy("/vision/tracker/add_object_tracking", AddObjectTracking)
+            wait_for_service("tracker/add_object_tracking")
+            add_object_tracking = rospy.ServiceProxy("tracker/add_object_tracking", AddObjectTracking)
             add_object_tracking (
                     tags = [ AprilTag(id, args.size, to_tf_transform(self.pMti[id])) for id in args.tags ],
                     object_name = args.group + "_measured",
@@ -150,8 +150,8 @@ class GroupOfTags(object):
                     model_path = args.visp_model,
                     )
         else:
-            wait_for_service("/vision/tracker/add_april_tag_detector")
-            add_april_tag_detector = rospy.ServiceProxy("add_april_tag_detector", AddAprilTagService)
+            wait_for_service("tracker/add_april_tag_detector")
+            add_april_tag_detector = rospy.ServiceProxy("tracker/add_april_tag_detector", AddAprilTagService)
             for id in args.tags:
                 tag_name = args.child_frame_fmt.format(id)
                 add_april_tag_detector(id, args.size, tag_name, args.meas_parent)
