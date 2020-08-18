@@ -30,8 +30,7 @@
         --measurement-parent-frame xtion_optical_frame
         --group-frame skin/hole_link
         --no-description
-        --size 0.0573
-        --tag 233
+        --size 0.0573 --tag 233
         "
         output="$(arg output)"
         />
@@ -43,20 +42,11 @@
         --measurement-parent-frame xtion_optical_frame
         --group-frame driller/base_link
         --no-description
-        --size 0.064
-        --tag 230
+        --size 0.064 --tag 230
+        --size 0.04 --tag 23
         "
         output="$(arg output)"
         />
-    <node pkg="agimus_demos" type="group_of_tags.py" name="driller_tags_top" args="
-        --child-frame-format 'driller/tag36_11_{:0>5d}'
-        --measurement-parent-frame xtion_optical_frame
-        --group-frame driller/base_link
-        --no-description
-        --size 0.04
-        --tag 23
-        "
-        output="$(arg output)"
-        />
+
   </group>
 </launch>
