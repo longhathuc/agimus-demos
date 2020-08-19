@@ -25,12 +25,15 @@
     </node>
 
     <!-- skin -->
+
+
     <node pkg="agimus_demos" type="group_of_tags.py" name="skin_tags" args="
         --child-frame-format 'skin/tag36_11_{:0>5d}'
         --measurement-parent-frame xtion_optical_frame
         --group-frame skin/hole_link
         --no-description
-        --size 0.0573 --tag 233
+        --size 0.0528 --tag 100
+        --size 0.0528 --tag 101
         "
         output="$(arg output)"
         />
