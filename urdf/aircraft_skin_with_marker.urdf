@@ -23,17 +23,38 @@
     <child link="hole_link"/>
     <origin xyz="0.30576 -0.0138 1.5535" rpy="1.8 0 0"/>
   </joint>
-  <link name="tag36_11_00233">
+  <!-- <link name="tag36_11_00233">
     <visual>
       <origin xyz="0 0 0.00001"/>
       <geometry>
         <mesh filename="package://gerard_bauzil/meshes/apriltag_36h11/tag36_11_00233.dae" scale="0.0573 0.0573 1."/>
       </geometry>
     </visual>
+  </link> -->
+  <link name="tag36_11_00100">
+    <visual>
+      <origin xyz="0 0 0.00000"/>
+      <geometry>
+        <mesh filename="package://gerard_bauzil/meshes/apriltag_36h11/tag36_11_00100.dae" scale="0.0573 0.0573 1."/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="tag36_11_00101">
+    <visual>
+      <origin xyz="0 0 0.00001"/>
+      <geometry>
+        <mesh filename="package://gerard_bauzil/meshes/apriltag_36h11/tag36_11_00101.dae" scale="0.0573 0.0573 1."/>
+      </geometry>
+    </visual>
   </link>
   <joint name="to_tag" type="fixed">
     <parent link="hole_link"/>
-    <child link="tag36_11_00233"/>
-    <origin xyz="-0.20 0 0"/>
+    <child link="tag36_11_00100"/>
+    <origin xyz="-0.252 0 0"/>
+  </joint>
+   <joint name="to_tag_2" type="fixed">
+    <parent link="hole_link"/>
+    <child link="tag36_11_00101"/>
+    <origin xyz="-0.145 0 0"/>
   </joint>
 </robot>
