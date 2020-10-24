@@ -1,0 +1,6 @@
+<robot name="box">
+  <handle name="qr" clearance="0.01">
+    <position xyz="0 0 0.0" rpy="0 0 0"/>
+    <link name="tag36_11"/>
+  </handle>
+</robot>

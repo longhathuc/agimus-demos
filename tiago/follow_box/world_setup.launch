@@ -1,0 +1,45 @@
+<launch>
+  <arg name="simulation"/>
+  <arg name="gazebo" default="false"/>
+
+  <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
+    args="0 0 0 0 0 0 1 world odom"
+    />
+
+  <group ns="box">
+    <param name="robot_description" textfile="$(find agimus_demos)/urdf/box_with_qr.urdf"/>
+    <param name="tf_prefix" value="box"/>
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+    <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
+      args="0 0 0 0 0 0 1 world box/base_link"
+      />
+  </group>
+
+  <!-- Gazebo -->
+  <group if="$(arg gazebo)" ns="gazebo">
+    <group ns="box">
+      <node name="spawn" pkg="gazebo_ros" type="spawn_model"
+        args="-file $(find agimus_demos)/urdf/box_with_qr.urdf -urdf -model box" />
+    </group>
+  </group>
+
+  <!-- Simulation -->
+  <group if="$(arg simulation)" ns="simulation">
+    <group ns="box">
+      <param name="robot_description" textfile="$(find agimus_demos)/urdf/box_with_qr.urdf"/>
+      <param name="tf_prefix" value="box"/>
+      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+      <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
+        args="0 0 0 0 0 0 1 box/base_link box_rviz/base_link"
+        />
+    </group>
+
+
+    <!--node name="simulation" pkg="agimus-sot" type="simulation.py" args="_tf_prefix:=sim_" /-->
+    <node name="simulation_gui" pkg="rqt_gui" type="rqt_gui"
+      args="--standalone rqt_agimus.simulation.Simulation --args
+      --tf-editor box/base_link box_rviz/base_link"
+      />
+  </group>
+
+</launch>
