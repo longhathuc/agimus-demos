@@ -104,14 +104,14 @@ ps.createPositionConstraint("gaze", "tiago/xtion_rgb_optical_frame", "box/tag_jo
 from hpp.corbaserver.manipulation import ConstraintGraphFactory
 graph = ConstraintGraph(robot, 'graph')
 factory = ConstraintGraphFactory(graph)
-factory.setGrippers([ "tiago/gripper", "driller/drill_tip", ])
-factory.setObjects([ "driller", "skin", ],
-        [ [ "driller/handle", ], [ "skin/hole", ], ],
-        [ [ ], [ ], ])
+#factory.setGrippers([ "tiago/gripper", "driller/drill_tip", ])
+# factory.setObjects([ "driller", "skin", ],
+#         [ [ "driller/handle", ], [ "skin/hole", ], ],
+#         [ [ ], [ ], ])
 
 factory.setRules([
     # Tiago always hold the gripper.
-    Rule([ "tiago/gripper", ], [ "driller/handle", ], True), Rule([ "tiago/gripper", ], [ ".*", ], False),
+    # Rule([ "tiago/gripper", ], [ "driller/handle", ], True), Rule([ "tiago/gripper", ], [ ".*", ], False),
     # Allow to associate drill_tip with skin/hole only.
     Rule([ "driller/drill_tip", ], [ "driller/handle", ], False), Rule([ "driller/drill_tip", ], [ ".*", ], True), ])
 factory.generate()
@@ -123,7 +123,7 @@ graph.initialize()
 
 # Constraint in this state are explicit so ps.setMaxIterProjection(1) should not
 # make it fail.
-res, q1, err = graph.applyNodeConstraints('tiago/gripper grasps driller/handle', q0)
+res, q1, err = graph.applyNodeConstraints('tiago/gripper grasps box/handle', q0)
 q1valid, msg = robot.isConfigValid(q1)
 if not q1valid:
     print(msg)
