@@ -16,7 +16,7 @@ if args.context != defaultContext:
     createContext (args.context)
 isSimulation = args.context == "simulation"
 
-Robot.urdfFilename = "package://tiago_data/robots/tiago.urdf"
+Robot.urdfFilename = "package://tiago_data/robots/tiago_steel.urdf"
 Robot.srdfFilename = "package://tiago_data/srdf/tiago.srdf"
 
 class Box:
@@ -49,6 +49,8 @@ robot.setJointBounds('tiago/root_joint', [-2, 2, -2, 2])
 ps = ProblemSolver(robot)
 vf = ViewerFactory(ps)
 vf.loadRobotModel (Box, "box")
+
+#def insertRobotSRDFModel (self, robotName, packageName, modelName, srdfSuffix):
 robot.insertRobotSRDFModel("box", "gerard_bauzil", "")
 robot.setJointBounds('box/root_joint', [-2, 2, -2, 2, 0, 2])
 

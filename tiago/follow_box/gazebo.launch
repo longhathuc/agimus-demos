@@ -4,6 +4,28 @@
     doc="set to true to start automatically the computer vision and state estimation nodes." />
   <arg name="debug_sot" default="false"
     doc="set to true to launch the SoT in gdb."/>
+  <!-- <arg name="use_sot" default="true"
+    doc="Use SoT instead of default controller."/> -->
+
+  <!-- <group ns="gazebo">
+    <include file="$(find gerard_bauzil)/launch/table_140_70_73.launch">
+      <arg name="prefix" value="table" />
+    </include>
+
+    <node name="spawn_table" pkg="gazebo_ros" type="spawn_model"
+      args="-file $(find gerard_bauzil)/urdf/table_140_70_73.urdf -urdf
+      -x 0. -y 0. -z 0. -Y 0.
+    -model table" />
+
+    <node name="table_to_tf" pkg="agimus_demos" type="gazebo_object_to_tf.py"
+        args="table base_link world" required="true"
+    />
+
+    <node pkg="tf" type="static_transform_publisher"
+        name="odom_to_world"
+        args="0 0 0 0 0 0 1 world odom 100" />
+
+  </group> -->
 
   <include file="$(find agimus_demos)/launch/tiago_follow_box_world_setup.launch">
     <arg name="simulation" value="false" />
@@ -12,45 +34,31 @@
 
   <!-- Initialization of robot root_joint pose as a ROS param
        value = "x y z X Y Z W" where Xi+Yj+Zk+W is a quaternion -->
-  <param name="robot_initial_pose"
-         value="0 -0.9 0 0 0 0.7071067811865476 0.7071067811865476"/>
+  <!-- <param name="robot_initial_pose"
+         value="-1.0 0 0 0 0 0.0 0.0"/> -->
 
   <!-- SoT parameters -->
-  <arg name="script_file" doc="Full path to the script which initialize the supervisor"
-    default="$(find agimus_demos)/tiago/follow_box/supervisor.py" />
+  <!-- <arg name="script_file" doc="Full path to the script which initialize the supervisor"
+    default="$(find agimus_demos)/tiago/follow_box/supervisor.py" /> -->
 
   <include file="$(find tiago_gazebo)/launch/tiago_gazebo.launch" >
     <arg name="arm" value="true"/>
-    <arg name="end_effector" value="pal-hey5"/>
+    <arg name="end_effector" value="pal-gripper"/>
     <arg name="ft_sensor"  default="schunk-ft"/>
 
     <arg name="tuck_arm" default="false"/>
     <arg name="public_sim" default="true"/>
 
-    <arg name="gzpose" default="-x 0.0 -y 0.9 -z 0.0 -R 0.0 -P 0.0 -Y 1.570796"/>
-  </include>
-  <include file="$(find roscontrol_sot_tiago)/launch/controller.launch" >
-    <arg name="use_mobile_base" value="false"/>
-    <arg name="end_effector" value="pal-gripper"/>
-    <arg name="simulation" value="true"/>
+    <arg name="gzpose" default="-x 1.0 -y 0.0 -z 0.0 -R 0.0 -P 0.0 -Y 3.141592653589793"/>
   </include>
 
-  <!--This starts the HPP interface in namespace agimus/hpp-->
-  <group ns="agimus/hpp">
-    <node name="hpp_node" pkg="agimus-hpp" type="hpp_node.py"
-      args="hpp-manipulation-server" respawn="true"
-      output="screen" />
-  </group>
+   <!-- <group if="$(arg use_sot)">
+      <node  pkg="sot-tiago" name="stop-controllers.py"  type="stop-controllers.py" output="screen"/>
 
-  <!--This starts sot supervisor in namespace agimus/sot-->
-  <include file="$(find agimus-sot)/launch/supervisor.launch" >
-    <arg name="script_file" value="$(arg script_file)"/>
-    <arg name="robot_prefix" value="tiago/"/>
-    <arg name="simulate_torque_feedback" value="true"/>
-    <arg name="required" value="false"/>
-  </include>
-
-  <include file="$(find agimus)/launch/path_execution.launch"/>
-
-  <include if="$(arg estimation)" file="$(find agimus_demos)/launch/tiago_follow_box_estimation.launch"/>
+      <include file="$(find roscontrol_sot_tiago)/launch/controller.launch" >
+        <arg name="use_mobile_base" value="false"/>
+        <arg name="end_effector" value="pal-gripper"/>
+        <arg name="simulation" value="true"/>
+      </include>
+  </group> -->
 </launch>
