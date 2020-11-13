@@ -69,14 +69,14 @@ def makeSupervisorWithFactory(robot):
 
     grippers = "tiago/gripper"
     objects = "box"
-    handlesPerObjects = [ "box/handle", ], 
+    handlesPerObjects = [ "box/to_tag", ], 
     contactPerObjects = [],
 
     srdf = {}
     srdfTiago = parse_srdf("srdf/tiago.srdf", packageName="tiago_data", prefix="tiago")
     
     srdfBox = parse_srdf(
-        "srdf/box_with_qr.srdf", packageName="agimus_demos", prefix="box"
+        "srdf/box_with_qr.srdf", packageName="gerard_bauzil", prefix="box"
     )
 
     for w in ["grippers", "handles", "contacts"]:
@@ -94,24 +94,24 @@ def makeSupervisorWithFactory(robot):
     factory.setObjects(objects, handlesPerObjects, contactPerObjects)
 
     from hpp.corbaserver.manipulation import Rule
-    factory.setRules([
-        # Tiago always hold the gripper.
-        Rule([ "tiago/gripper", ], [ "box/handle", ], True), Rule([ "tiago/gripper", ], [ ".*", ], False),
-        # Allow to associate drill_tip with skin/hole only.
-        Rule([ "driller/drill_tip", ], [ "driller/handle", ], False), Rule([ "driller/drill_tip", ], [ ".*", ], True), ])
+    # factory.setRules([
+    #     # Tiago always hold the gripper.
+    #     Rule([ "tiago/gripper", ], [ "box/handle", ], True), Rule([ "tiago/gripper", ], [ ".*", ], False),
+    #     # Allow to associate drill_tip with skin/hole only.
+    #     Rule([ "driller/drill_tip", ], [ "driller/handle", ], False), Rule([ "driller/drill_tip", ], [ ".*", ], True), ])
     factory.setupFrames(srdf["grippers"], srdf["handles"], robot)
     #factory.gripperFrames["driller/drill_tip" ].hasVisualTag = True
-    factory.handleFrames["box/qr"].hasVisualTag = True
-    factory.addAffordance(
-        Affordance("tiago/gripper", "driller/handle",
-            openControlType="position",
-            closeControlType="position",
-            refs={
-                "angle_open": (0.,0.,0.),
-                "angle_close": (5.3,5.72,8.0),  #"angle_close": (6.2,6.7,9.1),
-                },
-            )
-        )
+    factory.handleFrames["box/to_tag"].hasVisualTag = True
+    # factory.addAffordance(
+    #     Affordance("tiago/gripper", "driller/handle",
+    #         openControlType="position",
+    #         closeControlType="position",
+    #         refs={
+    #             "angle_open": (0.,0.,0.),
+    #             "angle_close": (5.3,5.72,8.0),  #"angle_close": (6.2,6.7,9.1),
+    #             },
+    #         )
+    #     )
   
     factory.generate()
 

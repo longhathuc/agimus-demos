@@ -16,12 +16,12 @@ if args.context != defaultContext:
     createContext (args.context)
 isSimulation = args.context == "simulation"
 
-Robot.urdfFilename = "package://tiago_data/robots/tiago_steel.urdf"
+Robot.urdfFilename = "package://tiago_data/robots/tiago_pal_gripper.urdf"
 Robot.srdfFilename = "package://tiago_data/srdf/tiago.srdf"
 
 class Box:
-    urdfFilename = "package://agimus_demos/urdf/box_with_qr.urdf"
-    srdfFilename = "package://agimus_demos/srdf/box_with_qr.srdf"
+    urdfFilename = "package://gerard_bauzil/urdf/box_with_qr.urdf"
+    srdfFilename = "package://gerard_bauzil/srdf/box_with_qr.srdf"
     rootJointType = "anchor"
 
 ## Reduce joint range for security
@@ -46,13 +46,15 @@ client.manipulation.problem.selectProblem (args.context)
 robot = Robot("robot", "tiago", rootJointType="planar", client=client)
 robot.setJointBounds('tiago/root_joint', [-2, 2, -2, 2])
 #robot.insertRobotSRDFModel("tiago", "tiago_data", "schunk", "_gripper")
+
+
 ps = ProblemSolver(robot)
 vf = ViewerFactory(ps)
-vf.loadRobotModel (Box, "box")
+# vf.loadRobotModel (Box, "box")
 
-#def insertRobotSRDFModel (self, robotName, packageName, modelName, srdfSuffix):
-robot.insertRobotSRDFModel("box", "gerard_bauzil", "")
-robot.setJointBounds('box/root_joint', [-2, 2, -2, 2, 0, 2])
+# #def insertRobotSRDFModel (self, robotName, packageName, modelName, srdfSuffix):
+# robot.insertRobotSRDFModel("box", "gerard_bauzil", "box_with_qr", "")
+# robot.setJointBounds('box/root_joint', [-2, 2, -2, 2, 0, 2])
 
 ps.selectPathValidation("Graph-Dichotomy", 0)
 ps.selectPathProjector("Progressive", 0.2)
@@ -66,7 +68,7 @@ ps.setParameter("SimpleTimeParameterization/order", 2)
 ps.setParameter("SimpleTimeParameterization/maxAcceleration", 1.0)
 ps.setParameter("ManipulationPlanner/extendStep", 0.7)
 
-vf.loadObjectModel (Box, "box")
+vf.loadObjectModel(Box, "box")
 
 shrinkJointRange(robot, 0.95)
 
@@ -80,8 +82,8 @@ q0[robot.rankInConfiguration['tiago/arm_4_joint']] = 1.87
 q0[robot.rankInConfiguration['tiago/arm_5_joint']] = -1.57
 q0[robot.rankInConfiguration['tiago/arm_6_joint']] = 0.01
 q0[robot.rankInConfiguration['tiago/arm_7_joint']] = 0.00
-q0[robot.rankInConfiguration['tiago/gripper_left_finger_joint']] = 0
-q0[robot.rankInConfiguration['tiago/gripper_right_finger_joint']] = 0
+q0[robot.rankInConfiguration['tiago/gripper_left_finger_joint']] = 0.0
+q0[robot.rankInConfiguration['tiago/gripper_right_finger_joint']] = 0.0
 
 
 def lockJoint(jname, q, cname=None):
@@ -100,56 +102,64 @@ for n in robot.jointNames:
     if n.startswith('tiago/hand_'):
         ljs.append(lockJoint(n, q0))
 
-ps.createPositionConstraint("gaze", "tiago/xtion_rgb_optical_frame", "box/tag_joint",
-        (0,0,0), (0,0,0), (True,True,False))
+# ps.createPositionConstraint("gaze", "tiago/xtion_rgb_optical_frame", "box/to_tag",
+#         (0,0,0), (0,0,0), (True,True,False))
 
 from hpp.corbaserver.manipulation import ConstraintGraphFactory
 graph = ConstraintGraph(robot, 'graph')
 factory = ConstraintGraphFactory(graph)
-#factory.setGrippers([ "tiago/gripper", "driller/drill_tip", ])
-# factory.setObjects([ "driller", "skin", ],
-#         [ [ "driller/handle", ], [ "skin/hole", ], ],
-#         [ [ ], [ ], ])
+factory.setGrippers([ "tiago/gripper"])
+factory.setObjects([ "box",],
+        [[ "box/to_tag", ],],
+        [[ ],])
 
-factory.setRules([
-    # Tiago always hold the gripper.
-    # Rule([ "tiago/gripper", ], [ "driller/handle", ], True), Rule([ "tiago/gripper", ], [ ".*", ], False),
-    # Allow to associate drill_tip with skin/hole only.
-    Rule([ "driller/drill_tip", ], [ "driller/handle", ], False), Rule([ "driller/drill_tip", ], [ ".*", ], True), ])
+factory.setRules([Rule([ "tiago/gripper", ], [ ".*", ], True), ])
 factory.generate()
 
 graph.addConstraints(graph=True, constraints=Constraints(numConstraints=ljs))
-for n in [ 'driller/drill_tip > skin/hole | 0-0_pregrasp', 'tiago/gripper grasps driller/handle : driller/drill_tip grasps skin/hole' ]:
+
+for n in ['tiago/gripper > box/to_tag | 0-0_pregrasp', 'tiago/gripper grasps box/to_tag']:
     graph.addConstraints(node=n, constraints=Constraints(numConstraints=["gaze"]))
+#     #['tiago/gripper_grasping_frame > box/to_tag | 0-0_pregrasp']:
+#     # ['tiago/gripper_grasping_frame grasps box/to_tag']:
+#         #    'tiago/gripper_grasping_frame grasps box/to_tag : tiago/gripper_grasping_frame grasps box/to_tag' ]:
+    
 graph.initialize()
 
-# Constraint in this state are explicit so ps.setMaxIterProjection(1) should not
-# make it fail.
-res, q1, err = graph.applyNodeConstraints('tiago/gripper grasps box/handle', q0)
-q1valid, msg = robot.isConfigValid(q1)
-if not q1valid:
-    print(msg)
-assert res
 
-ps.setInitialConfig(q1)
+# graph.addConstraints(graph=True, constraints=Constraints(numConstraints=ljs))
+# for n in [ 'driller/drill_tip > skin/hole | 0-0_pregrasp', 'tiago/gripper grasps driller/handle : driller/drill_tip grasps skin/hole' ]:
+#     graph.addConstraints(node=n, constraints=Constraints(numConstraints=["gaze"]))
+# graph.initialize()
 
-if not isSimulation:
-    qrand = q1
-    for i in range(100):
-        q2valid, q2, err = graph.generateTargetConfig('driller/drill_tip > skin/hole | 0-0', q1, qrand)
-        if q2valid:
-            q2valid, msg = robot.isConfigValid(q2)
-        if q2valid:
-            break
-        qrand = robot.shootRandomConfig()
-    assert q2valid
 
-    if not isSimulation:
-        ps.addGoalConfig(q2)
-        ps.solve()
+# # Constraint in this state are explicit so ps.setMaxIterProjection(1) should not
+# # make it fail.
+# res, q1, err = graph.applyNodeConstraints('tiago/gripper grasps box/handle', q0)
+# q1valid, msg = robot.isConfigValid(q1)
+# if not q1valid:
+#     print(msg)
+# assert res
 
-    try:
-        v = vf.createViewer()
-        v (q1)
-    except:
-        pass
+# ps.setInitialConfig(q1)
+
+# if not isSimulation:
+#     qrand = q1
+#     for i in range(100):
+#         q2valid, q2, err = graph.generateTargetConfig('driller/drill_tip > skin/hole | 0-0', q1, qrand)
+#         if q2valid:
+#             q2valid, msg = robot.isConfigValid(q2)
+#         if q2valid:
+#             break
+#         qrand = robot.shootRandomConfig()
+#     assert q2valid
+
+#     if not isSimulation:
+#         ps.addGoalConfig(q2)
+#         ps.solve()
+
+#     try:
+#         v = vf.createViewer()
+#         v (q1)
+#     except:
+#         pass
