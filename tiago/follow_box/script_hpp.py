@@ -45,16 +45,10 @@ client.manipulation.problem.selectProblem (args.context)
 
 robot = Robot("robot", "tiago", rootJointType="planar", client=client)
 robot.setJointBounds('tiago/root_joint', [-2, 2, -2, 2])
-#robot.insertRobotSRDFModel("tiago", "tiago_data", "schunk", "_gripper")
-
 
 ps = ProblemSolver(robot)
 vf = ViewerFactory(ps)
-# vf.loadRobotModel (Box, "box")
 
-# #def insertRobotSRDFModel (self, robotName, packageName, modelName, srdfSuffix):
-# robot.insertRobotSRDFModel("box", "gerard_bauzil", "box_with_qr", "")
-# robot.setJointBounds('box/root_joint', [-2, 2, -2, 2, 0, 2])
 
 ps.selectPathValidation("Graph-Dichotomy", 0)
 ps.selectPathProjector("Progressive", 0.2)
@@ -120,46 +114,37 @@ graph.addConstraints(graph=True, constraints=Constraints(numConstraints=ljs))
 
 for n in ['tiago/gripper > box/to_tag | 0-0_pregrasp', 'tiago/gripper grasps box/to_tag']:
     graph.addConstraints(node=n, constraints=Constraints(numConstraints=["gaze"]))
-#     #['tiago/gripper_grasping_frame > box/to_tag | 0-0_pregrasp']:
-#     # ['tiago/gripper_grasping_frame grasps box/to_tag']:
-#         #    'tiago/gripper_grasping_frame grasps box/to_tag : tiago/gripper_grasping_frame grasps box/to_tag' ]:
-    
+
 graph.initialize()
-
-
-# graph.addConstraints(graph=True, constraints=Constraints(numConstraints=ljs))
-# for n in [ 'driller/drill_tip > skin/hole | 0-0_pregrasp', 'tiago/gripper grasps driller/handle : driller/drill_tip grasps skin/hole' ]:
-#     graph.addConstraints(node=n, constraints=Constraints(numConstraints=["gaze"]))
-# graph.initialize()
 
 
 # # Constraint in this state are explicit so ps.setMaxIterProjection(1) should not
 # # make it fail.
-# res, q1, err = graph.applyNodeConstraints('tiago/gripper grasps box/handle', q0)
-# q1valid, msg = robot.isConfigValid(q1)
-# if not q1valid:
-#     print(msg)
-# assert res
+res, q1, err = graph.applyNodeConstraints('tiago/gripper grasps box/to_tag', q0)
+q1valid, msg = robot.isConfigValid(q1)
+if not q1valid:
+    print(msg)
+assert res
 
-# ps.setInitialConfig(q1)
+ps.setInitialConfig(q1)
 
-# if not isSimulation:
-#     qrand = q1
-#     for i in range(100):
-#         q2valid, q2, err = graph.generateTargetConfig('driller/drill_tip > skin/hole | 0-0', q1, qrand)
-#         if q2valid:
-#             q2valid, msg = robot.isConfigValid(q2)
-#         if q2valid:
-#             break
-#         qrand = robot.shootRandomConfig()
-#     assert q2valid
+if not isSimulation:
+    qrand = q1
+    for i in range(100):
+        q2valid, q2, err = graph.generateTargetConfig('tiago/gripper > box/to_tag | 0-0', q1, qrand)
+        if q2valid:
+            q2valid, msg = robot.isConfigValid(q2)
+        if q2valid:
+            break
+        qrand = robot.shootRandomConfig()
+    assert q2valid
 
-#     if not isSimulation:
-#         ps.addGoalConfig(q2)
-#         ps.solve()
+    if not isSimulation:
+        ps.addGoalConfig(q2)
+        ps.solve()
 
-#     try:
-#         v = vf.createViewer()
-#         v (q1)
-#     except:
-#         pass
+    try:
+        v = vf.createViewer()
+        v (q1)
+    except:
+        pass
