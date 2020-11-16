@@ -22,7 +22,7 @@ Robot.srdfFilename = "package://tiago_data/srdf/tiago_pal_gripper.srdf"
 class Box:
     urdfFilename = "package://gerard_bauzil/urdf/box_with_qr.urdf"
     srdfFilename = "package://gerard_bauzil/srdf/box_with_qr.srdf"
-    rootJointType = "anchor"
+    rootJointType = "freeflyer"
 
 ## Reduce joint range for security
 def shrinkJointRange (robot, ratio):
@@ -65,9 +65,8 @@ ps.setParameter("ManipulationPlanner/extendStep", 0.7)
 
 vf.loadObjectModel(Box, "box")
 from hpp import Quaternion
-oMsk = (0.0,-0.1,0.832) + Quaternion().fromRPY(0, 0, 0).toTuple()
+oMsk = (0.0,0.0,0.832) + Quaternion().fromRPY(0, 0, 0).toTuple()
 robot.setRootJointPosition("box", oMsk)
-# robot.setJointPosition("box/root_joint", oMsk)
 shrinkJointRange(robot, 0.95)
 
 # q0 = robot.shootRandomConfig()
@@ -96,7 +95,7 @@ def lockJoint(jname, q, cname=None):
 
 ljs = list()
 ljs.append(lockJoint("tiago/root_joint", q0))
-
+ljs.append(lockJoint("box/root_joint", q0))
 
 
 
@@ -116,9 +115,7 @@ factory.setObjects([ "box",],
         [[ ],])
 
 factory.setRules([Rule([ "tiago/gripper", ], [ ".*", ], True), ])
-# factory.setRules([
-#     # Tiago always hold the gripper.
-#     Rule([ "tiago/gripper", ], [ "box/to_tag", ], True), Rule([ "tiago/gripper", ], [ ".*", ], False)])
+
 factory.generate()
 
 graph.addConstraints(graph=True, constraints=Constraints(numConstraints=ljs))
@@ -130,35 +127,50 @@ for n in ['tiago/gripper > box/to_tag | f_pregrasp', 'tiago/gripper grasps box/t
 
 graph.initialize()
 
-# v = vf.createViewer()
-# v (q0)
+
 
 # # # Constraint in this state are explicit so ps.setMaxIterProjection(1) should not
 # # # make it fail.
-# res, q1, err = graph.applyNodeConstraints('tiago/gripper grasps box/to_tag', q0)
+res, q1, err = graph.applyNodeConstraints('tiago/gripper grasps box/to_tag', q0)
+# if not res:
+#     for i in range(1000):
+#         q = robot.shootRandomConfig()
+#         res, q1, err = graph.applyNodeConstraints('tiago/gripper grasps box/to_tag', q)
+#         if res: break
+
 # res, q1, err = graph.applyNodeConstraints('tiago/gripper > box/to_tag | 0-0', q0)
-# q1valid, msg = robot.isConfigValid(q1)
-# if not q1valid:
-#     print(msg)
-# assert res
-
-ps.setInitialConfig(q0)
-
-if not isSimulation:
-    qrand = q0
-    for i in range(100):
-        q2valid, q2, err = graph.generateTargetConfig('tiago/gripper > box/to_tag | f', q0, qrand)
-        if q2valid:
-            q2valid, msg = robot.isConfigValid(q2)
-        if q2valid:
-            break
-        qrand = robot.shootRandomConfig()
-    # assert q2valid
-
-    # if not isSimulation:
-    #     ps.addGoalConfig(q2)
-    #     ps.solve()
+q1valid, msg = robot.isConfigValid(q1)
 
 v = vf.createViewer()
-v (q2)
+v (q1)
+
+if not q1valid:
+    print(msg)
+assert res
+
+
+# if not isSimulation:
+#     ps.setInitialConfig(q0)
+#     ps.addGoalConfig(q1)
+#     ps.solve()
+
+
+# ps.setInitialConfig(q0)
+
+# if not isSimulation:
+#     qrand = q0
+#     for i in range(100):
+#         q2valid, q2, err = graph.generateTargetConfig('tiago/gripper > box/to_tag | f', q0, qrand)
+#         # q2valid, q2, err = graph.generateTargetConfig('tiago/gripper > box/to_tag | f_01', q0, qrand)
+#         print(err)
+#         if q2valid:
+#             q2valid, msg = robot.isConfigValid(q2)
+#         if q2valid:
+#             break
+        # qrand = robot.shootRandomConfig()
+    # assert q2valid
+
+# if not isSimulation:
+#     ps.addGoalConfig(q1)
+#     ps.solve()
 
