@@ -4,11 +4,11 @@
     doc="set to true to start automatically the computer vision and state estimation nodes." />
   <arg name="debug_sot" default="false"
     doc="set to true to launch the SoT in gdb."/>
-
+<!-- 
   <include file="$(find agimus_demos)/launch/tiago_follow_box_world_setup.launch">
     <arg name="simulation" value="false" />
     <arg name="gazebo" value="false" />
-  </include>
+  </include> -->
 
   <!-- Initialization of robot root_joint pose as a ROS param
        value = "x y z X Y Z W" where Xi+Yj+Zk+W is a quaternion -->
@@ -17,7 +17,7 @@
 
   <!-- SoT parameters -->
   <arg name="script_file" doc="Full path to the script which initialize the supervisor"
-    default="$(find agimus_demos)/tiago/tiago_follow_box_estimation/supervisor.py" />
+    default="$(find agimus_demos)/tiago/follow_box/supervisor.py" />
 
   <include file="$(find roscontrol_sot_tiago)/launch/controller.launch" >
     <arg name="use_mobile_base" value="false"/>
@@ -33,5 +33,5 @@
     <arg name="simulate_torque_feedback" value="false"/>
   </include>
 
-  <include if="$(arg estimation)" file="$(find agimus_demos)/launch/tiago_follow_box_estimation.launch"/>
+  <!-- <include if="$(arg estimation)" file="$(find agimus_demos)/launch/tiago_follow_box_estimation.launch"/> -->
 </launch>

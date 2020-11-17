@@ -96,7 +96,7 @@ def lockJoint(jname, q, cname=None):
 ljs = list()
 ljs.append(lockJoint("tiago/root_joint", q0))
 ljs.append(lockJoint("box/root_joint", q0))
-
+robot.setJointBounds('box/root_joint', [-1, 1, -1, 1, -1, 1])
 
 
 # # for n in robot.jointNames:
@@ -141,36 +141,29 @@ res, q1, err = graph.applyNodeConstraints('tiago/gripper grasps box/to_tag', q0)
 # res, q1, err = graph.applyNodeConstraints('tiago/gripper > box/to_tag | 0-0', q0)
 q1valid, msg = robot.isConfigValid(q1)
 
-v = vf.createViewer()
-v (q1)
+# v = vf.createViewer()
+# v (q1)
 
 if not q1valid:
     print(msg)
 assert res
 
 
-# if not isSimulation:
-#     ps.setInitialConfig(q0)
-#     ps.addGoalConfig(q1)
-#     ps.solve()
+if not isSimulation:
+    qrand = q0
+    
+    q2valid, q2, err = graph.generateTargetConfig('tiago/gripper > box/to_tag | f', q0, qrand)
+        # q2valid, q2, err = graph.generateTargetConfig('tiago/gripper > box/to_tag | f_01', q0, qrand)
+    print(err)
+    if q2valid:
+        q2valid, msg = robot.isConfigValid(q2)
+    # if q2valid:
+    #     break
+
+if not isSimulation:
+    ps.setInitialConfig(q0)
+    ps.addGoalConfig(q2)
+    ps.solve()
 
 
-# ps.setInitialConfig(q0)
-
-# if not isSimulation:
-#     qrand = q0
-#     for i in range(100):
-#         q2valid, q2, err = graph.generateTargetConfig('tiago/gripper > box/to_tag | f', q0, qrand)
-#         # q2valid, q2, err = graph.generateTargetConfig('tiago/gripper > box/to_tag | f_01', q0, qrand)
-#         print(err)
-#         if q2valid:
-#             q2valid, msg = robot.isConfigValid(q2)
-#         if q2valid:
-#             break
-        # qrand = robot.shootRandomConfig()
-    # assert q2valid
-
-# if not isSimulation:
-#     ps.addGoalConfig(q1)
-#     ps.solve()
 
