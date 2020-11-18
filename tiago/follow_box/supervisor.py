@@ -67,14 +67,14 @@ def makeSupervisorWithFactory(robot):
     if not hasattr(robot, "camera_frame"):
         robot.camera_frame = "xtion_optical_frame"
 
-    grippers = "tiago/gripper"
-    objects = "box"
+    grippers = "tiago/gripper",
+    objects = "box",
     handlesPerObjects = [ "box/to_tag", ], 
     contactPerObjects = [],
 
     srdf = {}
-    srdfTiago = parse_srdf("srdf/tiago_pal_gripper.srdf", packageName="tiago_data", prefix="tiago")
-    
+    # srdfTiago = parse_srdf("srdf/tiago_pal_gripper.srdf", packageName="tiago_data", prefix="tiago")
+    srdfTiago = parse_srdf("srdf/schunk_gripper.srdf", packageName="tiago_data", prefix="tiago")
     srdfBox = parse_srdf(
         "srdf/box_with_qr.srdf", packageName="gerard_bauzil", prefix="box"
     )

@@ -11,15 +11,14 @@ p.add_argument ('--context', type=str, metavar='context',
                 help="identifier of ProblemSolver instance")
 p.add_argument ('--ros-param', type=str, metavar='ros_param',
                 help="The name of the ROS param containing the URDF.")
-p.add_argument ('--end-effector', type=str, metavar='end_effector',
-                help="The end effector of robot, either pal_gripper or schunk_wsg.")
+
 args = p.parse_args ()
 if args.context != defaultContext:
     createContext (args.context)
 isSimulation = args.context == "simulation"
 
-Robot.urdfFilename = "package://tiago_data/robots/tiago_pal_gripper.urdf"
-Robot.srdfFilename = "package://tiago_data/srdf/tiago_pal_gripper.srdf"
+Robot.urdfFilename = "package://tiago_data/robots/tiago_schunk_wsg.urdf"
+Robot.srdfFilename = "package://tiago_data/srdf/schunk_gripper.srdf"
 
 class Box:
     urdfFilename = "package://gerard_bauzil/urdf/box_with_qr.urdf"
@@ -88,8 +87,8 @@ q0[robot.rankInConfiguration['tiago/arm_4_joint']] = 1.94
 q0[robot.rankInConfiguration['tiago/arm_5_joint']] = -1.57
 q0[robot.rankInConfiguration['tiago/arm_6_joint']] = 1.34
 q0[robot.rankInConfiguration['tiago/arm_7_joint']] = 0.00
-q0[robot.rankInConfiguration['tiago/gripper_left_finger_joint']] = 0.04
-q0[robot.rankInConfiguration['tiago/gripper_right_finger_joint']] = 0.04
+q0[robot.rankInConfiguration['tiago/gripper_finger_joint']] = 0.02
+
 
 
 def lockJoint(jname, q, cname=None):

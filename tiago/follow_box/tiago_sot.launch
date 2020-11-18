@@ -21,7 +21,7 @@
 
   <include file="$(find roscontrol_sot_tiago)/launch/controller.launch" >
     <arg name="use_mobile_base" value="false"/>
-    <arg name="end_effector" value="pal-gripper"/>
+    <arg name="end_effector" value="schunk-wsg"/>
     <arg name="simulation" value="false"/>
   </include>
 
@@ -34,4 +34,12 @@
   </include>
 
   <!-- <include if="$(arg estimation)" file="$(find agimus_demos)/launch/tiago_follow_box_estimation.launch"/> -->
+
+  <group ns="agimus/hpp">
+    <node name="hpp_node" pkg="agimus-hpp" type="hpp_node.py"
+      args="hpp-manipulation-server" respawn="true"
+      output="screen" />
+  </group>
+
+  <include file="$(find agimus)/launch/path_execution.launch"/>
 </launch>

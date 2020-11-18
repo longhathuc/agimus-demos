@@ -11,7 +11,8 @@
 
       <include file="$(find roscontrol_sot_tiago)/launch/controller.launch" >
         <arg name="use_mobile_base" value="false"/>
-        <arg name="end_effector" value="pal-gripper"/>
+        <arg name="end_effector" value="schunk-wsg"/>
+        <!-- <arg name="end_effector" value="pal-gripper"/> -->
         <arg name="simulation" value="true"/>
       </include>
     <!--This starts the HPP interface in namespace agimus/hpp-->
