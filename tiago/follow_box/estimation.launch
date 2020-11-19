@@ -27,10 +27,10 @@
     <!-- skin -->
 
 
-    <node pkg="agimus_demos" type="group_of_tags.py" name="skin_tags" args="
-        --child-frame-format 'skin/tag36_11_{:0>5d}'
+    <node pkg="agimus_demos" type="group_of_tags.py" name="box_tags" args="
+        --child-frame-format 'box/tag36_11_{:0>5d}'
         --measurement-parent-frame xtion_optical_frame
-        --group-frame box/qr_link
+        --group-frame box/base_link
         --no-description
         --size 0.0528 --tag 100
         "

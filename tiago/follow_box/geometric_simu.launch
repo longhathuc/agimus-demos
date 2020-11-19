@@ -5,14 +5,15 @@
   <arg name="debug_sot" default="false"
     doc="set to true to launch the SoT in gdb."/>
 
-  <include file="$(find agimus_demos)/launch/tiago_follow_box_geometric_world_setup.launch">
+  <include file="$(find agimus_demos)/launch/tiago_follow_box_world_setup.launch">
     <arg name="simulation" value="true" />
   </include>
 
   <!-- Initialization of robot root_joint pose as a ROS param
        value = "x y z X Y Z W" where Xi+Yj+Zk+W is a quaternion -->
+       <!-- args="1.0 0 0 0 0 1 0 world odom" -->
   <param name="robot_initial_pose"
-         value="0 -0.9 0 0 0 0.7071067811865476 0.7071067811865476"/>
+         value="0.0 0 0 0 0 0 1"/>
   <!-- <arg name="gzpose" default="-x 1.0 -y 0.0 -z 0.0 -R 0.0 -P 0.0 -Y 3.141592653589793"/> -->
   
   <group ns="vision">
@@ -30,7 +31,7 @@
 
   <include file="$(find sot_tiago_bringup)/launch/geometric_simu.launch" >
     <arg name="use_mobile_base" value="false"/>
-    <arg name="end_effector" value="pal-gripper"/>
+    <arg name="end_effector" value="schunk-wsg"/>
     <arg if="$(arg debug_sot)" name="sot-launch-prefix" value="xterm -e gdb --args" />
   </include>
   <param if="$(arg debug_sot)" name="/test/sot-launch-prefix" value="xterm -e gdb -ex run --args"/>

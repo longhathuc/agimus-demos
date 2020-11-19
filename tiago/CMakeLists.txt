@@ -16,5 +16,4 @@ INSTALL_DEMO_LAUNCH_FILES(follow_box
   tiago_hpp.launch
   world_setup.launch
   tiago_controller.launch
-  geometric_world_setup.launch
   )

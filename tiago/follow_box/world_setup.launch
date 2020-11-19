@@ -1,37 +1,70 @@
 <launch>
-  <arg name="simulation"/>
-  <arg name="gazebo" default="true"/>
+  <arg name="simulation" default="false"/>
+  <arg name="gazebo" default="false"/>
 
   <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
-    args="0 0 0 0 0 0 1 world odom"
+    args="1.0 0 0 0 0 1 0 world odom"
   />
 
+  <group ns="box">
+    <param name="robot_description" textfile="$(find gerard_bauzil)/urdf/box_with_qr.urdf"/>
+    <param name="tf_prefix" value="box"/>
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+    <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
+      args="0.2 0 0.832 0 0 0.7068252 0.7073883 world box/base_link"
+      />
+  </group>
 
+
+   <group ns="table">
+    <param name="robot_description" textfile="$(find gerard_bauzil)/urdf/table_140_70_73.urdf"/>
+    <param name="tf_prefix" value="table"/>
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+    <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
+      args="0 0 0 0 0 0.7068252 0.7073883 world table/table_link"
+      />
+  </group> 
+ 
   <!-- Gazebo -->
   <group if="$(arg gazebo)" ns="gazebo">
 
-      <include file="$(find gerard_bauzil)/launch/table_140_70_73.launch">
-          <arg name="prefix" value="sim_table" />
-      </include>
-      <include file="$(find gerard_bauzil)/launch/table_140_70_73.launch">
-          <arg name="prefix" value="sim_table_rviz" />
-      </include>
-
-      <node name="spawn_table" pkg="gazebo_ros" type="spawn_model"
+    <node name="spawn_table" pkg="gazebo_ros" type="spawn_model"
       args="-file $(find gerard_bauzil)/urdf/table_140_70_73.urdf -urdf
       -x 0. -y 0. -z 0. -Y 1.57
       -model table" />
 
-    <node name="sim_box_rviz" pkg="tf2_ros" type="static_transform_publisher"
-          args="0 0 0 0 0 0 1 sim_box/base_link sim_box_rviz/base_link"
-    />
-
-     <node name="spawn" pkg="gazebo_ros" type="spawn_model"
+    <node name="spawn" pkg="gazebo_ros" type="spawn_model"
          args="-file $(find gerard_bauzil)/urdf/box_with_qr.urdf -urdf 
               -x 0.2 -y -0.0 -z 1.932 -R 0.0 -P 0.0 -Y 1.57
               -model box" />
+    </group>
 
 
+  <group if="$(arg simulation)" ns="simulation">
+
+    <group ns="box">
+      <param name="robot_description" textfile="$(find gerard_bauzil)/urdf/box_with_qr.urdf"/>
+      <param name="tf_prefix" value="box_rviz"/>
+      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+        <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
+        args="0 0 0 0 0 0 1 box/base_link box_rviz/base_link"
+        />
+    </group>
+
+    <group ns="table">
+      <param name="robot_description" textfile="$(find gerard_bauzil)/urdf/table_140_70_73.urdf"/>
+      <param name="tf_prefix" value="table_rviz"/>
+      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+        <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
+        args="0 0 0 0 0 0 1 table/table_link table_rviz/table_link"
+        />
+    </group>
+     
+    <node name="simulation_gui" pkg="rqt_gui" type="rqt_gui"
+      args="--standalone rqt_agimus.simulation.Simulation --args
+      --tf-editor box/base_link box_rviz/base_link
+      --tf-editor table/table_link table_rviz/table_link"
+      />
   </group>
 
 </launch>
