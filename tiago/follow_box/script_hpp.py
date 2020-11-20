@@ -71,15 +71,17 @@ ps.setParameter("SimpleTimeParameterization/order", 2)
 ps.setParameter("SimpleTimeParameterization/maxAcceleration", 1.0)
 ps.setParameter("ManipulationPlanner/extendStep", 0.7)
 
+
 vf.loadObjectModel(Box, "box")
 from hpp import Quaternion
-oMsk = (0.0,0.2,0.74) + Quaternion().fromRPY(0, 0, 0).toTuple()
+oMsk = (1.0,0.0,0.85) + Quaternion().fromRPY(0, 0, -1.57079632679 ).toTuple()
 robot.setRootJointPosition("box", oMsk)
 shrinkJointRange(robot, 0.95)
 
 # q0 = robot.shootRandomConfig()
 q0 = robot.getCurrentConfig()
-q0[:4] = [0, -0.9, 0, 1]
+# q0[:4] = [0, -1.0, 0, 1]
+q0[:4] = [0, 0, 1, 0]
 q0[robot.rankInConfiguration['tiago/torso_lift_joint']] = 0.15
 q0[robot.rankInConfiguration['tiago/arm_1_joint']] = 0.20
 q0[robot.rankInConfiguration['tiago/arm_2_joint']] = -1.34
