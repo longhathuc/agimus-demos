@@ -11,7 +11,8 @@
     <param name="tf_prefix" value="box"/>
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
     <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
-      args="0.2 0 0.832 0 0 0.7068252 0.7073883 world box/base_link"
+      args="0.0 0 0.832 0 0 0.7068252 0.7073883 world box/base_link"
+      
       />
   </group>
 
@@ -21,7 +22,7 @@
     <param name="tf_prefix" value="table"/>
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
     <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
-      args="0 0 0 0 0 0.7068252 0.7073883 world table/table_link"
+      args="-0.2 0 0 0 0 0.7068252 0.7073883 world table/table_link"
       />
   </group> 
  
@@ -30,12 +31,12 @@
 
     <node name="spawn_table" pkg="gazebo_ros" type="spawn_model"
       args="-file $(find gerard_bauzil)/urdf/table_140_70_73.urdf -urdf
-      -x 0. -y 0. -z 0. -Y 1.57
+      -x 0.2 -y 0. -z 0. -Y 1.57
       -model table" />
 
     <node name="spawn" pkg="gazebo_ros" type="spawn_model"
          args="-file $(find gerard_bauzil)/urdf/box_with_qr.urdf -urdf 
-              -x 0.2 -y -0.0 -z 1.932 -R 0.0 -P 0.0 -Y 1.57
+              -x 0.0 -y -0.0 -z 1.932 -R 0.0 -P 0.0 -Y 1.57
               -model box" />
     </group>
 
