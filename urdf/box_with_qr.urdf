@@ -1,5 +1,5 @@
 <robot name="box">
- 	<link name="base_link">
+ 	<!-- <link name="base_link">
 		<visual>  
 			<geometry>
 				<box size="0.08 0.1 0.18"/>
@@ -28,7 +28,7 @@
       </material>
     </visual>
   </link> 
-   
+    -->
  
   
 </robot>

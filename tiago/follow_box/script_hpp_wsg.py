@@ -48,6 +48,7 @@ def shrinkJointRange (robot, ratio):
 print("context=" + args.context)
 loadServerPlugin (args.context, "manipulation-corba.so")
 # loadServerPlugin (args.context, "manipulation-corba.so")
+newProblem()
 client = CorbaClient(context=args.context)
 client.manipulation.problem.selectProblem (args.context)
 
@@ -72,7 +73,8 @@ ps.setParameter("ManipulationPlanner/extendStep", 0.7)
 
 vf.loadObjectModel(Box, "box")
 from hpp import Quaternion
-oMsk = (1.0,0.0,0.85) + Quaternion().fromRPY(0, 0, -1.57079632679 ).toTuple()
+# oMsk = (1.0,0.0,0.85) + Quaternion().fromRPY(0, 0, -1.57079632679 ).toTuple()
+oMsk = (1.0,0.0,0.85) + Quaternion().fromRPY(0, 0, 3.14 ).toTuple()
 robot.setRootJointPosition("box", oMsk)
 shrinkJointRange(robot, 0.95)
 
@@ -159,7 +161,7 @@ ps.setInitialConfig(q0)
 if not isSimulation:
     qrand = q0
     
-    q2valid, q2, err = graph.generateTargetConfig('tiago/gripper > box/to_tag | f_01', q0, qrand)
+    q2valid, q2, err = graph.generateTargetConfig('tiago/gripper > box/to_tag | f', q0, qrand)
         # q2valid, q2, err = graph.generateTargetConfig('tiago/gripper > box/to_tag | f_01', q0, qrand)
     print(err)
     if q2valid:
