@@ -17,3 +17,8 @@ INSTALL_DEMO_LAUNCH_FILES(follow_box
   world_setup.launch
   tiago_controller.launch
   )
+
+
+  INSTALL_DEMO_LAUNCH_FILES(gerard_bauzil
+  tiago_gazebo.launch
+  )

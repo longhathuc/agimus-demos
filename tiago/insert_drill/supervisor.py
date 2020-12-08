@@ -52,7 +52,7 @@ def hpTasks(sotrobot):
         import numpy as np
         N = sotrobot.dynamic.getDimension()
         projection = MatrixConstant("base_projection")
-        projection.set(np.vstack((np.zeros((6, N-6)), np.identity(N-6))).tolist())
+        projection.set(np.vstack((np.zeros((6, N-6)), np.identity(N-6))))
         task.projector = projection.sout
     return task
 
