@@ -18,6 +18,16 @@ INSTALL_DEMO_LAUNCH_FILES(follow_box
   tiago_controller.launch
   )
 
+  INSTALL_DEMO_LAUNCH_FILES(deburr
+  estimation.launch
+  gazebo.launch
+  geometric_simu.launch
+  tiago_sot.launch
+  tiago_hpp.launch
+  world_setup.launch
+  tiago_controller.launch
+  )
+
 
   INSTALL_DEMO_LAUNCH_FILES(gerard_bauzil
   tiago_gazebo.launch

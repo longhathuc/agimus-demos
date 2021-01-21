@@ -1,0 +1,64 @@
+<launch>
+  <arg name="simulation" default="false"/>
+  <arg name="gazebo" default="false"/>
+
+  <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
+    args="1.0 0 0 0 0 1 0 world odom"
+  />
+
+  <group ns="p72">
+    <param name="robot_description" textfile="$(find agimus_demos)/urdf/P72.urdf"/>
+    <param name="tf_prefix" value="p72"/>
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+    <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
+      args="0.0 0 0.832 0 0 0 1 world p72/base_link"
+   
+      
+      />
+  </group>
+
+<!-- 
+   <group ns="table">
+    <param name="robot_description" textfile="$(find gerard_bauzil)/urdf/table_80_80_73.urdf"/>
+    <param name="tf_prefix" value="table"/>
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+    <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
+      args="-0.2 0 0 0 0 0.7068252 0.7073883 world table/table_link"
+      />
+  </group>  -->
+ 
+  <!-- Gazebo -->
+  <group if="$(arg gazebo)" ns="gazebo">
+
+    <!-- <node name="spawn_table" pkg="gazebo_ros" type="spawn_model"
+      args="-file $(find gerard_bauzil)/urdf/table_80_80_73.urdf -urdf
+      -x -0.2 -y 0. -z 0. -Y 1.57
+      -model table" /> -->
+
+    <node name="spawn" pkg="gazebo_ros" type="spawn_model"
+         args="-file $(find agimus_demos)/urdf/P72.urdf -urdf 
+              -x 0.0 -y -0.0 -z 0.75 -R 0.0 -P 0.0 -Y 1.57
+              -model p72" />
+    </group>
+
+
+  <group if="$(arg simulation)" ns="simulation">
+
+    <group ns="p72">
+      <param name="robot_description" textfile="$(find agimus_demos)/urdf/P72.urdf"/>
+      <param name="tf_prefix" value="p72_rviz"/>
+      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+        <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
+        args="0 0 0 0 0 0.7071068 0.7071068 p72/base_link p72_rviz/base_link"
+        />
+    </group>
+
+     
+    <node name="simulation_gui" pkg="rqt_gui" type="rqt_gui"
+      args="--standalone rqt_agimus.simulation.Simulation --args
+      --tf-editor p72/base_link p72_rviz/base_link
+      --tf-editor table/table_link table_rviz/table_link"
+      />
+  </group>
+
+</launch>

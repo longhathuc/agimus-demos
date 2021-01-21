@@ -1,0 +1,24 @@
+<launch>
+  <!-- World setup -->
+  <arg name="estimation" default="false"
+    doc="set to true to start automatically the computer vision and state estimation nodes." />
+  <arg name="debug_sot" default="false"
+    doc="set to true to launch the SoT in gdb."/>
+
+  <include file="$(find agimus_demos)/launch/tiago_deburr_world_setup.launch">
+    <arg name="simulation" value="false" />
+    <arg name="gazebo" value="true" />
+  </include>
+
+  <include file="$(find tiago_gazebo)/launch/tiago_gazebo.launch" >
+    <arg name="arm" value="true"/>
+    <arg name="end_effector" value="schunk-wsg"/>
+    <arg name="ft_sensor"  default="schunk-ft"/>
+
+    <arg name="tuck_arm" default="true"/>
+    <arg name="public_sim" default="true"/>
+
+    <arg name="gzpose" default="-x 1.0 -y 0.0 -z 0.0 -R 0.0 -P 0.0 -Y 3.141592653589793"/>
+  </include>
+
+</launch>

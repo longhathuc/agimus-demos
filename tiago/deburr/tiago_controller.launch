@@ -1,0 +1,34 @@
+<launch>
+  <arg name="estimation" default="false"
+    doc="set to true to start automatically the computer vision and state estimation nodes." />
+  <arg name="debug_sot" default="false"
+    doc="set to true to launch the SoT in gdb."/>
+  
+ <!-- SoT parameters -->
+  <arg name="script_file" doc="Full path to the script which initialize the supervisor"
+    default="$(find agimus_demos)/tiago/deburr/supervisor.py" />
+      <!-- <node  pkg="sot-tiago" name="stop-controllers.py"  type="stop-controllers.py" output="screen"/> -->
+
+      <include file="$(find roscontrol_sot_tiago)/launch/controller.launch" >
+        <arg name="use_mobile_base" value="false"/>
+        <arg name="end_effector" value="schunk-wsg"/>
+        <!-- <arg name="end_effector" value="pal-gripper"/> -->
+        <arg name="simulation" value="true"/>
+      </include>
+    <!--This starts the HPP interface in namespace agimus/hpp-->
+    <group ns="agimus/hpp">
+        <node name="hpp_node" pkg="agimus-hpp" type="hpp_node.py"
+        args="hpp-manipulation-server" respawn="true"
+        output="screen" />
+    </group>
+
+    <!--This starts sot supervisor in namespace agimus/sot-->
+    <include file="$(find agimus-sot)/launch/supervisor.launch" >
+        <arg name="script_file" value="$(arg script_file)"/>
+        <arg name="robot_prefix" value="tiago/"/>
+        <arg name="simulate_torque_feedback" value="true"/>
+        <arg name="required" value="false"/>
+    </include>
+
+    <include file="$(find agimus)/launch/path_execution.launch"/>
+</launch>
