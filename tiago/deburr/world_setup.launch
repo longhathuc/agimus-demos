@@ -11,9 +11,8 @@
     <param name="tf_prefix" value="p72"/>
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
     <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
-      args="0.0 0 0.832 0 0 0 1 world p72/base_link"
+      args="0.0 0 0.832 0 0 0.7071068 0.7071068 world p72/base_link"
    
-      
       />
   </group>
 
@@ -49,15 +48,14 @@
       <param name="tf_prefix" value="p72_rviz"/>
       <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
         <node name="to_tf_2" pkg="tf2_ros" type="static_transform_publisher"
-        args="0 0 0 0 0 0.7071068 0.7071068 p72/base_link p72_rviz/base_link"
+        args="0 0 0 0 0 0 1 p72/base_link p72_rviz/base_link"
         />
     </group>
 
      
     <node name="simulation_gui" pkg="rqt_gui" type="rqt_gui"
       args="--standalone rqt_agimus.simulation.Simulation --args
-      --tf-editor p72/base_link p72_rviz/base_link
-      --tf-editor table/table_link table_rviz/table_link"
+      --tf-editor p72/base_link p72_rviz/base_link"
       />
   </group>
 
